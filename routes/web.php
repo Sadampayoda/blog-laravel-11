@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ValidationController;
 // use Illuminate\Auth\Middleware\Authenticate;
 // use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
@@ -9,9 +10,9 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // })->name('home');
 
-Route::get('/',function(){
-    return 'oke';
-})->name('home');
+// Route::get('/',function(){
+//     return 'oke';
+// })->name('home');
 
 
 Route::controller(ValidationController::class)->group(function(){
@@ -26,6 +27,12 @@ Route::controller(ValidationController::class)->group(function(){
     // });
     Route::get('/logout','logout')->name('logout');
 });
+
+Route::controller(HomeController::class)->group(function(){
+    Route::get('/','index')->name('home');
+});
+
+
 
 
 
