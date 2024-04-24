@@ -33,7 +33,7 @@ class ValidationController extends Controller
 
     public function ValidationLogin(ValidationLogin $validationLogin)
     {
-        $credintials = $validationLogin->all();
+        $credintials = $validationLogin->only(['email','password']);
 
         if(Auth::attempt($credintials)){
             $validationLogin->session()->regenerate();
