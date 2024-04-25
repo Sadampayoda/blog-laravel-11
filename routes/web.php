@@ -30,9 +30,9 @@ Route::controller(ValidationController::class)->group(function(){
     Route::get('/logout','logout')->name('logout');
 });
 
-// Route::controller(HomeController::class)->group(function(){
-//     Route::get('/','index')->name('home');
-// });
+Route::controller(HomeController::class)->group(function(){
+    Route::get('/blog/search','searchBlog')->name('search.blog');
+});
 
 Route::resource('blog',BlogController::class);
 Route::resource('commend',CommentController::class);

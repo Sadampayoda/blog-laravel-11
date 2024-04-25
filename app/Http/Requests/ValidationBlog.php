@@ -22,7 +22,8 @@ class ValidationBlog extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => 'required|min:4'
+            'image' => 'image|mimes:png,jpg,jpeg|max:2000',
+            'description' => 'min:4'
         ];
     }
 }

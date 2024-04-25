@@ -22,13 +22,13 @@ class BlogController extends Controller
     {
         $blogs = $this->blogRepositories->all('User');
 
-        $blogs->map(function ($blog){
-            $newFormat = Carbon::createFromFormat('Y-m-d H:i:s',$blog->created_at);
+        $blogs->map(function ($blog) {
+            $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blog->created_at);
             $blog->create_blog = $newFormat->format('H:i - d F Y');
         });
 
         // dd($blogs);
-        return view('blog.index',[
+        return view('blog.index', [
             'data' => $blogs
         ]);
     }
@@ -46,16 +46,15 @@ class BlogController extends Controller
      */
     public function store(ValidationBlog $validationBlog)
     {
-        if(!auth()->user()->id)
-        {
+
+        if (!auth()->user()->id) {
             return abort(404);
         }
         $filename = null;
-        if($validationBlog->hasFile('image'))
-        {
+        if ($validationBlog->hasFile('image')) {
             $file = $validationBlog->file('image');
-            $filename = $file->store('upload/blog');
-
+            $filename = random_int(10, 9999999) . '-' . $file->getClientOriginalName();
+            $file->move('image/blogs', $filename);
         }
 
         $this->blogRepositories->create([
@@ -64,9 +63,7 @@ class BlogController extends Controller
             'description' => $validationBlog->description
         ]);
 
-        return redirect()->route('blog.index')->with('success','Anda telah berhasil membuat blog');
-
-
+        return redirect()->route('blog.index')->with('success', 'Anda telah berhasil membuat blog');
     }
 
     /**
@@ -88,9 +85,46 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Blog $blog)
+    public function update(ValidationBlog $validationBlog, Blog $blog)
     {
-        //
+        // dd($validationBlog->all());
+        if (!auth()->user()) {
+            return abort(404);
+        }
+
+        if ($validationBlog->hasFile('image')) {
+            $validationBlog->only('image', 'description');
+
+            if($validationBlog->imageLama)
+            {
+                if (file_exists(public_path('image/blogs/' . $validationBlog->imageLama))) {
+                    unlink(public_path('image/blogs/' . $validationBlog->imageLama));
+                }
+
+            }
+
+            $file = $validationBlog->file('image');
+            $filename = random_int(10, 9999999) . '-' . $file->getClientOriginalName();
+            $file->move('image/blogs', $filename);
+        } else {
+            $validationBlog->only('description');
+            $filename = $validationBlog->imageLama;
+            if ($validationBlog->imageHapus == 'on') {
+
+                if (file_exists(public_path('image/blogs/' . $validationBlog->imageLama))) {
+                    unlink(public_path('image/blogs/' . $validationBlog->imageLama));
+                }
+                $filename = null;
+            }
+
+        }
+        $this->blogRepositories->update($blog->id, [
+            'user_id' => auth()->user()->id,
+            'image' => $filename,
+            'description' => $validationBlog->description
+        ]);
+
+        return redirect()->route('blog.index')->with('success', 'Anda telah berhasil Update blog');
     }
 
     /**
@@ -98,6 +132,14 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        //
+        if($blog->image)
+        {
+            if (file_exists(public_path('image/blogs/' . $blog->image))) {
+                unlink(public_path('image/blogs/' . $blog->image));
+            }
+        }
+
+        $this->blogRepositories->delete($blog->id);
+        return redirect()->route('blog.index')->with('success', 'Anda telah berhasil Hapus blog');
     }
 }
