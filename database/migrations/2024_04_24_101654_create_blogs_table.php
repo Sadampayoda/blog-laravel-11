@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->text('description');
             $table->timestamps();
         });

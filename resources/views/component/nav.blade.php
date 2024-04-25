@@ -10,6 +10,9 @@
                 <li class="nav-item ">
                     <a class="nav-link text-light active" aria-current="page" href="#">Home</a>
                 </li>
+                <li class="nav-item ">
+                    <a class="nav-link text-light"  href="{{route('blog.index')}}">Blog</a>
+                </li>
                 @if (!auth()->user())
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{{route('login')}}">login</a>
@@ -23,6 +26,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">Akun {{ auth()->user()->name }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{route('logout')}}" class="nav-link text-light">Logout</a>
                     </li>
                 @endif
 
