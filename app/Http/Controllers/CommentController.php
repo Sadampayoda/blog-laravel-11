@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Repositories\CommentRepositories;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    protected $commentRepositories;
+
+    public function __construct(CommentRepositories $commentRepositories)
+    {
+        $this->commentRepositories = $commentRepositories;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +35,17 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->commentRepositories->create([
+            'blog_id' => $request->blog_id,
+            'user_id' => auth()->user()->id,
+            'tag' => null,
+            'comment' => $request->comment
+        ]);
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $request->comment
+        ]);
     }
 
     /**
@@ -58,8 +75,12 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(Request $request)
     {
-        //
+        $this->commentRepositories->delete($request->comment_id);
+
+        return response()->json([
+            'message' => 'Sukses delete'
+        ]);
     }
 }

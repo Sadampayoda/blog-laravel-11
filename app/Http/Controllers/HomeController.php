@@ -20,13 +20,27 @@ class HomeController extends Controller
 
     public function searchBlog(Request $request)
     {
-        $blogs = $this->blogRepositories->search($request->keyword,'User');
+        $blogs = $this->blogRepositories->search($request->keyword,['User']);
 
         $blogs->map(function ($blog) {
             $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blog->created_at);
             $blog->create_blog = $newFormat->format('H:i - d F Y');
         });
         return view('blog.search',[
+            'data' => $blogs
+        ]);
+    }
+
+    public function commentBlog($id)
+    {
+        $blogs = $this->blogRepositories->find($id,['User','Comment.User']);
+
+
+        $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blogs->created_at);
+        $blogs->create_blog = $newFormat->format('H:i - d F Y');
+
+        // dd($blogs);
+        return view('comment.create', [
             'data' => $blogs
         ]);
     }

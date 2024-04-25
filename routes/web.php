@@ -4,6 +4,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ValidationController;
+use App\Http\Controllers\UserController;
 // use Illuminate\Auth\Middleware\Authenticate;
 // use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -32,8 +33,10 @@ Route::controller(ValidationController::class)->group(function(){
 
 Route::controller(HomeController::class)->group(function(){
     Route::get('/blog/search','searchBlog')->name('search.blog');
+    Route::get('/blog/comment/{id}','commentBlog')->name('comment.blog');
 });
 
+Route::resource('profile',UserController::class);
 Route::resource('blog',BlogController::class);
 Route::resource('commend',CommentController::class);
 

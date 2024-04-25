@@ -25,7 +25,7 @@
                         <a class="nav-link text-light">Notifikasi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Akun {{ auth()->user()->name }}</a>
+                        <a class="nav-link text-light" href="{{route('profile.index')}}">Akun {{ auth()->user()->name }}</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{route('logout')}}" class="nav-link text-light">Logout</a>

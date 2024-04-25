@@ -6,16 +6,20 @@ use App\Repositories\interface\{CrudRepositoriesInterface, SearchRepositoriesInt
 use App\Models\Blog;
 
 Class BlogRepositories implements CrudRepositoriesInterface, SearchRepositoriesInterface {
-    public function all(string $relationships = null){
+    public function all(array $relationships = []){
         if($relationships){
             return Blog::with($relationships)->orderBy('created_at','DESC')->get();
         }else{
             return Blog::all();
         }
     }
-    public function find($id)
+    public function find($id, ?array $relationships = [])
     {
-        return Blog::find($id);
+        if($relationships){
+            return Blog::with($relationships)->orderBy('created_at','DESC')->find($id);
+        }else{
+            return Blog::find($id);
+        }
     }
 
     public function create(array $data)
@@ -33,7 +37,7 @@ Class BlogRepositories implements CrudRepositoriesInterface, SearchRepositoriesI
         Blog::where('id',$id)->delete();
     }
 
-    public function search($keyword, ?string $relationships = null)
+    public function search($keyword, ?array $relationships = [])
     {
         if($relationships){
             return Blog::with($relationships)->where('description','LIKE','%'.$keyword.'%')->orderBy('created_at','DESC')->get();

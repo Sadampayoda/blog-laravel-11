@@ -84,9 +84,10 @@
                             <div class="col-1">
                                 <button class="custom-btn"><i class="bi bi-heart"></i></button>
                             </div>
-                            <div class="col-1">
-                                <button class="custom-btn"><i class="bi bi-chat-square"></i>
-                                </button>
+                            <div class="col-1 ">
+                                <a href="{{ route('blog.show', $item->id) }}" class="custom-btn mt-1 text-decoration-none text-dark"><i
+                                        class="bi bi-chat-square"></i>
+                                </a>
                             </div>
                             @if (auth()->user()->id == $item->User->id)
                                 <div class="col-1">
@@ -97,12 +98,13 @@
 
                                 </div>
                                 <div class="col-1">
-                                    <button type="button" class="custom-btn" data-bs-toggle="modal" data-bs-target="#BlogDeleteModal{{$item->id}}"><i class="bi bi-trash3"></i>
+                                    <button type="button" class="custom-btn" data-bs-toggle="modal"
+                                        data-bs-target="#BlogDeleteModal{{ $item->id }}"><i class="bi bi-trash3"></i>
                                     </button>
                                 </div>
                             @endif
                             <div class="col text-end">
-                                <button class="custom-btn">0 Komentar
+                                <button class="custom-btn">{{$item->countComment}} Komentar
                                 </button>
                             </div>
                         </div>
@@ -159,7 +161,7 @@
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
-                            <div class="mb-2" id="image-lama{{$item->id}}">
+                            <div class="mb-2" id="image-lama{{ $item->id }}">
                                 @if ($item->image)
                                     <div class="mb-2">
                                         <img src="{{ asset('image/blogs/' . $item->image) }}" class="img-fluid">
@@ -168,17 +170,19 @@
                                         </div>
                                     </div>
                                     <div class="d-grid">
-                                        <button type="button" data-id={{$item->id}} class="btn btn-danger image">Hapus foto sebelumnya</button>
+                                        <button type="button" data-id={{ $item->id }}
+                                            class="btn btn-danger image">Hapus foto sebelumnya</button>
                                     </div>
                                 @endif
 
                             </div>
-                            <input type="hidden" name="imageLama" id="imageLama{{$item->id}}" value="{{$item->image}}">
-                            <input type="hidden" name="imageHapus" id="image-hapus{{$item->id}}" value="">
+                            <input type="hidden" name="imageLama" id="imageLama{{ $item->id }}"
+                                value="{{ $item->image }}">
+                            <input type="hidden" name="imageHapus" id="image-hapus{{ $item->id }}" value="">
                             <!-- Input file baru -->
                             <div class="mb-2">
                                 <label for="image" class="form-label">
-                                    Upload File {{$item->image ? 'Baru' : ''}}
+                                    Upload File {{ $item->image ? 'Baru' : '' }}
                                 </label>
                                 <input type="file" name="image" id="image" class="form-control">
                             </div>
@@ -203,51 +207,52 @@
 
 
     {{-- Modal Delete --}}
-    @foreach ($data as $item )
-        <div class="modal fade" id="BlogDeleteModal{{$item->id}}" tabindex="-1" aria-labelledby="BlogDeleteModalLabel" aria-hidden="true">
+    @foreach ($data as $item)
+        <div class="modal fade" id="BlogDeleteModal{{ $item->id }}" tabindex="-1"
+            aria-labelledby="BlogDeleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="BlogDeleteModalLabel">Hapus Blog</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                        <div class="modal-body">
-                            Apakah Yakin ingin menghapusnya ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <form action="{{route('blog.destroy',$item->id)}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-primary">Delete Blog</button>
-                            </form>
-                        </div>
+                    <div class="modal-body">
+                        Apakah Yakin ingin menghapusnya ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form action="{{ route('blog.destroy', $item->id) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-primary">Delete Blog</button>
+                        </form>
+                    </div>
 
                 </div>
             </div>
         </div>
-
     @endforeach
 
     <script>
-        $(document).ready(function(){
-            $('.image').on('click',function(){
+        $(document).ready(function() {
+            $('.image').on('click', function() {
                 var id = $(this).data('id')
 
-                if(id){
-                    $('#image-lama'+ id).hide()
-                    $('#image-hapus'+ id).val('on')
+                if (id) {
+                    $('#image-lama' + id).hide()
+                    $('#image-hapus' + id).val('on')
                 }
             })
 
-            $('#search-blog').on('keyup',function(){
+            $('#search-blog').on('keyup', function() {
                 var keyword = $(this).val()
                 $.ajax({
-                    type:'GET',
-                    url:"{{route('search.blog')}}",
-                    data:{keyword:keyword},
-                    success:function(data)
-                    {
+                    type: 'GET',
+                    url: "{{ route('search.blog') }}",
+                    data: {
+                        keyword: keyword
+                    },
+                    success: function(data) {
                         $('#blog').html(data)
                     }
                 })

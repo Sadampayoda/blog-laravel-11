@@ -20,11 +20,12 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = $this->blogRepositories->all('User');
+        $blogs = $this->blogRepositories->all(['User','Comment']);
 
         $blogs->map(function ($blog) {
             $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blog->created_at);
             $blog->create_blog = $newFormat->format('H:i - d F Y');
+            $blog->countComment = $blog->Comment->count();
         });
 
         // dd($blogs);
@@ -71,7 +72,16 @@ class BlogController extends Controller
      */
     public function show(Blog $blog)
     {
-        //
+        $blogs = $this->blogRepositories->find($blog->id,['User','Comment.User']);
+
+
+        $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blogs->created_at);
+        $blogs->create_blog = $newFormat->format('H:i - d F Y');
+
+        // dd($blogs);
+        return view('blog.show', [
+            'data' => $blogs,
+        ]);
     }
 
     /**
