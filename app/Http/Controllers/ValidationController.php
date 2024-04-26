@@ -12,11 +12,19 @@ class ValidationController extends Controller
 {
     public function register()
     {
+        if(auth()->user())
+        {
+            return abort(403);
+        }
         return view('validate.register');
     }
 
     public function login()
     {
+        if(auth()->user())
+        {
+            return abort(403);
+        }
         return view('validate.index');
     }
 

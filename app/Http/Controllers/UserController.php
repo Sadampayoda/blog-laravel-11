@@ -22,6 +22,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        if(!auth()->user())
+        {
+            return abort(403);
+        }
         $blogs = $this->blogRepositories->searchWhereSelect('user_id',auth()->user()->id,['User','Comment','Love']);
         $blogs->map(function ($blog) {
             $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blog->created_at);

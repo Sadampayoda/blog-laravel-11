@@ -2,10 +2,10 @@
 
 
 namespace App\Repositories;
-use App\Repositories\interface\{CrudRepositoriesInterface};
+use App\Repositories\interface\{CrudRepositoriesInterface, SearchRepositoriesInterface};
 use App\Models\Love;
 
-Class LoveRepositories implements CrudRepositoriesInterface {
+Class LoveRepositories implements CrudRepositoriesInterface, SearchRepositoriesInterface {
     public function all(array $relationships = []){
         if($relationships){
             return Love::with($relationships)->orderBy('created_at','DESC')->get();
@@ -35,6 +35,25 @@ Class LoveRepositories implements CrudRepositoriesInterface {
     public function delete($id)
     {
         Love::where('id',$id)->delete();
+    }
+
+    public function search($columns, $keyword, array $relationships = [])
+    {
+        if($relationships){
+            return Love::with($relationships)->where($columns,'LIKE','%'.$keyword.'%')->orderBy('created_at','DESC')->get();
+        }else{
+            return Love::where($columns,'LIKE','%'.$keyword.'%')->get();
+        }
+    }
+    public function searchWhereSelect(string $columns, string $keyword, array $relationships = [])
+    {
+        if($relationships)
+        {
+            return Love::with($relationships)->where($columns,$keyword)->orderBy('created_at','DESC')->get();
+        }else{
+
+            return Love::where($columns,$keyword)->orderBy('created_at','DESC')->get();
+        }
     }
 
 

@@ -43,14 +43,13 @@
         <div class="row d-flex justify-content-center">
             <div class="col-9">
                 <div class="row d-flex justify-content-center mt-2 border-bottom p-2">
-                    <div class="col-2">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#ProfileEdit"
-                            class="btn btn-dark">Edit Profile</button>
+                    <div class="col-4">
+                        <div class="d-grid">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#ProfileEdit"
+                                class="btn btn-dark">Edit Profile</button>
+                        </div>
                     </div>
-                    <div class="col-2">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#ProfileEditPassword"
-                            class="btn btn-dark">Password</button>
-                    </div>
+
                 </div>
                 <div class="row d-flex justify-content-center mt-4">
                     <div class="col-7 p-3">

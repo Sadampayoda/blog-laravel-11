@@ -38,7 +38,6 @@ class CommentController extends Controller
         $this->commentRepositories->create([
             'blog_id' => $request->blog_id,
             'user_id' => auth()->user()->id,
-            'tag' => null,
             'comment' => $request->comment
         ]);
 

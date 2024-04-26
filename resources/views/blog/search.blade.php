@@ -59,7 +59,8 @@
                     @endif
                 @else
                     <div class="col-1">
-                        <a href="{{ route('login') }}" class="custom-btn love"><i class="bi bi-heart"></i>
+                        <a class="text-decoration-none text-dark" href="{{ route('login') }}"
+                            class="custom-btn love"><i class="bi bi-heart"></i>
                             <span>{{ $item->countLove }}</span></a>
                     </div>
                 @endif
@@ -69,18 +70,21 @@
                         class="custom-btn mt-1 text-decoration-none text-dark"><i class="bi bi-chat-square"></i>
                     </a>
                 </div>
-                @if (auth()->user()->id == $item->User->id)
-                    <div class="col-1">
-                        <button type="button" class="custom-btn" data-bs-toggle="modal"
-                            data-bs-target="#BlogEditModal{{ $item->id }}"><i class="bi bi-pencil-square"></i></i>
-                        </button>
+                @if (auth()->user())
+                    @if (auth()->user()->id == $item->User->id)
+                        <div class="col-1">
+                            <button type="button" class="custom-btn" data-bs-toggle="modal"
+                                data-bs-target="#BlogEditModal{{ $item->id }}"><i
+                                    class="bi bi-pencil-square"></i></i>
+                            </button>
 
-                    </div>
-                    <div class="col-1">
-                        <button type="button" class="custom-btn" data-bs-toggle="modal"
-                            data-bs-target="#BlogDeleteModal{{ $item->id }}"><i class="bi bi-trash3"></i>
-                        </button>
-                    </div>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="custom-btn" data-bs-toggle="modal"
+                                data-bs-target="#BlogDeleteModal{{ $item->id }}"><i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    @endif
                 @endif
                 <div class="col text-end">
                     <button class="custom-btn">{{ $item->countComment }} Komentar

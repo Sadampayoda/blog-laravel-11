@@ -51,6 +51,20 @@
                             <p>{{ $data->description }}</p>
                         </div>
                     </div>
+                    <div class="row">
+                        @if (auth()->user())
+                            <div class="col-2">
+                                <button class="custom-btn love"><i class="bi bi-heart"></i>
+                                    <span>{{ $data->countLove }}</span></button>
+                            </div>
+
+                        @else
+                            <div class="col-2">
+                                <a class="text-decoration-none text-dark" href="{{ route('login') }}" class="custom-btn love"><i class="bi bi-heart"></i>
+                                    <span>{{ $data->countLove }}</span></a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
             <div class="col-md-5">
@@ -64,32 +78,39 @@
                         <div class="col-12  border rounded form-comment overflow-y-scroll" id="form-comment">
                             @foreach ($data->Comment as $item)
                                 <div class="row border rounded bg-light p-2 m-2">
-                                    @if ($item->User->id == auth()->user()->id)
-                                        <div class="row mb-1 ">
-                                            <div class="col text-danger">
-                                                <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
-                                            </div>
-                                            <div class="col text-end">
-                                                <button class="custom-btn" type="button" id="delete-comment"
-                                                    data-id="{{ $item->id }}">
-                                                    <i class="bi bi-trash3"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="row mb-1">
-                                            <div class="col text-muted">
-                                                <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
-                                            </div>
-                                            @if ($item->User->id == auth()->user()->id)
+                                    @if (auth()->user())
+                                        @if ($item->User->id == auth()->user()->id)
+                                            <div class="row mb-1 ">
+                                                <div class="col text-danger">
+                                                    <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
+                                                </div>
                                                 <div class="col text-end">
                                                     <button class="custom-btn" type="button" id="delete-comment"
                                                         data-id="{{ $item->id }}">
                                                         <i class="bi bi-trash3"></i>
                                                     </button>
                                                 </div>
-
-                                            @endif
+                                            </div>
+                                        @else
+                                            <div class="row mb-1">
+                                                <div class="col text-muted">
+                                                    <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
+                                                </div>
+                                                @if ($item->User->id == auth()->user()->id)
+                                                    <div class="col text-end">
+                                                        <button class="custom-btn" type="button" id="delete-comment"
+                                                            data-id="{{ $item->id }}">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    @else
+                                        <div class="row mb-1 ">
+                                            <div class="col text-dark">
+                                                <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
+                                            </div>
                                         </div>
                                     @endif
                                     <div class="row">
@@ -103,11 +124,18 @@
                     </div>
                     <div class="row m-1">
                         <div class="col p-2 border">
-                            <div class="input-group">
-                                <input type="text" class="form-control border-dark" name="comment" id="input-comment">
-                                <input type="hidden" name="id_blog" id="id-blog" value="{{ $data->id }}">
-                                <button class="btn btn-outline-dark" type="button" id="button-comment">Button</button>
-                            </div>
+                            @if (auth()->user())
+                                <div class="input-group">
+                                    <input type="text" class="form-control border-dark" name="comment"
+                                        id="input-comment">
+                                    <input type="hidden" name="id_blog" id="id-blog" value="{{ $data->id }}">
+                                    <button class="btn btn-outline-dark" type="button" id="button-comment">Button</button>
+                                </div>
+                            @else
+                                <div class="d-grid">
+                                    <a class="btn btn-dark" href="{{route('login')}}">Login Terlebih dahulu</a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -149,10 +177,11 @@
 
                 $.ajax({
                     type: 'DELETE',
-                    url: "{{ route('commend.destroy', ['commend' => '__commend_id__']) }}".replace('__commend_id__', comment_id),
+                    url: "{{ route('commend.destroy', ['commend' => '__commend_id__']) }}".replace(
+                        '__commend_id__', comment_id),
                     data: {
                         _token: '{{ csrf_token() }}',
-                        comment_id:comment_id
+                        comment_id: comment_id
                     },
                     success: function(respons) {
                         console.log(respons)

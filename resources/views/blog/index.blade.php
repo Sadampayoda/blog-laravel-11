@@ -85,25 +85,31 @@
                                 @if ($item->loves)
                                     <div class="col-1">
                                         <button class="custom-btn love" data-id="{{ $item->id }}"><i
-                                                id="icon{{ $item->id }}" class="bi bi-heart-fill text-danger" id="count-icon{{$item->id}}"></i> <span id="count-icon{{$item->id}}">{{$item->countLove}}</span> </button>
+                                                id="icon{{ $item->id }}" class="bi bi-heart-fill text-danger"
+                                                id="count-icon{{ $item->id }}"></i> <span
+                                                id="count-icon{{ $item->id }}">{{ $item->countLove }}</span> </button>
                                         <input type="hidden" name="status" id="status{{ $item->id }}" value="on">
-                                        <input type="hidden" name="id_love" id="id_love{{$item->id}}" value="{{$item->id_love}}">
-                                        <input type="hidden" name="count" id="count{{$item->id}}" value="{{$item->countLove}}" >
+                                        <input type="hidden" name="id_love" id="id_love{{ $item->id }}"
+                                            value="{{ $item->id_love }}">
+                                        <input type="hidden" name="count" id="count{{ $item->id }}"
+                                            value="{{ $item->countLove }}">
                                     </div>
                                 @else
                                     <div class="col-1">
                                         <button class="custom-btn love" data-id="{{ $item->id }}"><i
-                                                id="icon{{ $item->id }}" class="bi bi-heart" ></i> <span id="count-icon{{$item->id}}">{{$item->countLove}}</span></button>
+                                                id="icon{{ $item->id }}" class="bi bi-heart"></i> <span
+                                                id="count-icon{{ $item->id }}">{{ $item->countLove }}</span></button>
                                         <input type="hidden" name="status" id="status{{ $item->id }}" value="off">
-                                        <input type="hidden" name="count" id="count{{$item->id}}" value="{{$item->countLove}}" >
+                                        <input type="hidden" name="count" id="count{{ $item->id }}"
+                                            value="{{ $item->countLove }}">
 
                                     </div>
                                 @endif
                             @else
-                            <div class="col-1">
-                                <a href="{{route('login')}}" class="custom-btn love"><i
-                                         class="bi bi-heart" ></i> <span>{{$item->countLove}}</span></a>
-                            </div>
+                                <div class="col-1">
+                                    <a class="text-decoration-none text-dark" href="{{ route('login') }}" class="custom-btn love"><i class="bi bi-heart"></i>
+                                        <span>{{ $item->countLove }}</span></a>
+                                </div>
                             @endif
 
                             <div class="col-1 ">
@@ -111,19 +117,22 @@
                                     class="custom-btn mt-1 text-decoration-none text-dark"><i class="bi bi-chat-square"></i>
                                 </a>
                             </div>
-                            @if (auth()->user()->id == $item->User->id)
-                                <div class="col-1">
-                                    <button type="button" class="custom-btn" data-bs-toggle="modal"
-                                        data-bs-target="#BlogEditModal{{ $item->id }}"><i
-                                            class="bi bi-pencil-square"></i></i>
-                                    </button>
+                            @if (auth()->user())
+                                @if (auth()->user()->id == $item->User->id)
+                                    <div class="col-1">
+                                        <button type="button" class="custom-btn" data-bs-toggle="modal"
+                                            data-bs-target="#BlogEditModal{{ $item->id }}"><i
+                                                class="bi bi-pencil-square"></i></i>
+                                        </button>
 
-                                </div>
-                                <div class="col-1">
-                                    <button type="button" class="custom-btn" data-bs-toggle="modal"
-                                        data-bs-target="#BlogDeleteModal{{ $item->id }}"><i class="bi bi-trash3"></i>
-                                    </button>
-                                </div>
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="custom-btn" data-bs-toggle="modal"
+                                            data-bs-target="#BlogDeleteModal{{ $item->id }}"><i
+                                                class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                @endif
                             @endif
                             <div class="col text-end">
                                 <button class="custom-btn">{{ $item->countComment }} Komentar
@@ -139,7 +148,8 @@
 
 
     {{-- Modal Create --}}
-    <div class="modal fade" id="BlogCreateModal" tabindex="-1" aria-labelledby="BlogCreateModalLabel" aria-hidden="true">
+    <div class="modal fade" id="BlogCreateModal" tabindex="-1" aria-labelledby="BlogCreateModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -283,7 +293,7 @@
             $('.love').on('click', function() {
                 var blog_id = $(this).data('id')
                 var status = $('#status' + blog_id).val()
-                var count = $('#count'+blog_id).val()
+                var count = $('#count' + blog_id).val()
 
                 if (status == 'off') {
 
@@ -296,7 +306,7 @@
                         },
                         success: function(respons) {
                             console.log(respons)
-                            $('#count-icon'+blog_id).html(parseInt(count)+1)
+                            $('#count-icon' + blog_id).html(parseInt(count) + 1)
                             // $('#count-icon'+blog_id).html(count+1)
                             $('#status' + blog_id).val('on')
                             $('#icon' + blog_id).addClass('bi bi-heart-fill text-danger')
@@ -305,7 +315,7 @@
                     })
 
                 } else if (status == 'on') {
-                    var love_id = $('#id_love'+ blog_id).val()
+                    var love_id = $('#id_love' + blog_id).val()
 
                     $.ajax({
                         type: 'DELETE',
@@ -317,7 +327,7 @@
                         },
                         success: function(respons) {
                             console.log(respons)
-                            $('#count-icon'+blog_id).html(parseInt(count)-1)
+                            $('#count-icon' + blog_id).html(parseInt(count) - 1)
                             $('#status' + blog_id).val('off')
                             $('#icon' + blog_id).addClass('bi bi-heart')
                             $('#icon' + blog_id).removeClass('bi bi-heart-fill text-danger')

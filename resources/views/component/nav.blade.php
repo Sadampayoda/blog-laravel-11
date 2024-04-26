@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto ">
                 <li class="nav-item ">
-                    <a class="nav-link text-light active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link text-light active" aria-current="page" href="{{route('home')}}">Home</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link text-light"  href="{{route('blog.index')}}">Blog</a>
@@ -22,7 +22,7 @@
                     </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link text-light">Notifikasi</a>
+                        <a class="nav-link text-light" href="{{route('love.index')}}">Notifikasi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{{route('profile.index')}}">Akun {{ auth()->user()->name }}</a>

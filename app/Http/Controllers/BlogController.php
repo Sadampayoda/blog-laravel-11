@@ -5,15 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ValidationBlog;
 use App\Models\Blog;
 use App\Repositories\BlogRepositories;
+use App\Repositories\CommentRepositories;
+use App\Repositories\LoveRepositories;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    protected $blogRepositories;
-    public function __construct(BlogRepositories $blogRepositories)
+    protected $blogRepositories,$commentRepositories,$loveRepositories;
+    public function __construct(
+        BlogRepositories $blogRepositories,
+        CommentRepositories $commentRepositories,
+        LoveRepositories $loveRepositories
+        )
     {
         $this->blogRepositories = $blogRepositories;
+        $this->commentRepositories = $commentRepositories;
+        $this->loveRepositories = $loveRepositories;
     }
     /**
      * Display a listing of the resource.
@@ -26,13 +34,15 @@ class BlogController extends Controller
             $blog->create_blog = $newFormat->format('H:i - d F Y');
             $blog->countComment = $blog->Comment->count();
             $blog->countLove = $blog->Love->count();
-            foreach($blog->Love as $item)
-            {
-                $blog->loves = false;
-                if($item->user_id == auth()->user()->id)
+            if(auth()->user()){
+                foreach($blog->Love as $item)
                 {
-                    $blog->loves = true;
-                    $blog->id_love = $item->id;
+                    $blog->loves = false;
+                    if($item->user_id == auth()->user()->id)
+                    {
+                        $blog->loves = true;
+                        $blog->id_love = $item->id;
+                    }
                 }
             }
         });
@@ -81,15 +91,17 @@ class BlogController extends Controller
      */
     public function show(Blog $blog)
     {
-        $blogs = $this->blogRepositories->find($blog->id,['User','Comment.User']);
+        $blogs = $this->blogRepositories->find($blog->id,['User','Comment.User','Love']);
 
 
         $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blogs->created_at);
         $blogs->create_blog = $newFormat->format('H:i - d F Y');
+        $blogs->countLove = $blog->Love->count();
 
         // dd($blogs);
         return view('blog.show', [
             'data' => $blogs,
+
         ]);
     }
 
@@ -151,12 +163,25 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
+        $dataDelete = $this->blogRepositories->find($blog->id,['Comment','Love']);
+
+
+
         if($blog->image)
         {
             if (file_exists(public_path('image/blogs/' . $blog->image))) {
                 unlink(public_path('image/blogs/' . $blog->image));
             }
         }
+
+        foreach($dataDelete->Comment as $item)
+        {
+            $this->commentRepositories->delete($item->id);
+        }
+        foreach($dataDelete->Love as $itemLove){
+            $this->loveRepositories->delete($itemLove->id);
+        }
+
 
         $this->blogRepositories->delete($blog->id);
         return redirect()->route('blog.index')->with('success', 'Anda telah berhasil Hapus blog');

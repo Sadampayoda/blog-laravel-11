@@ -26,13 +26,16 @@ class HomeController extends Controller
             $blog->create_blog = $newFormat->format('H:i - d F Y');
             $blog->countComment = $blog->Comment->count();
             $blog->countLove = $blog->Love->count();
-            foreach($blog->Love as $item)
+            if(auth()->user())
             {
-                $blog->loves = false;
-                if($item->user_id == auth()->user()->id)
+                foreach($blog->Love as $item)
                 {
-                    $blog->loves = true;
-                    $blog->id_love = $item->id;
+                    $blog->loves = false;
+                    if($item->user_id == auth()->user()->id)
+                    {
+                        $blog->loves = true;
+                        $blog->id_love = $item->id;
+                    }
                 }
             }
         });
@@ -43,6 +46,7 @@ class HomeController extends Controller
 
     public function commentBlog($id)
     {
+
         $blogs = $this->blogRepositories->find($id,['User','Comment.User']);
 
 

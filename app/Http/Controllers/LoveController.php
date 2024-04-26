@@ -3,23 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Love;
+use App\Repositories\BlogRepositories;
 use App\Repositories\LoveRepositories;
 use Illuminate\Http\Request;
 
 class LoveController extends Controller
 {
-    protected $loveRepositories;
-    public function __construct(LoveRepositories $loveRepositories){
+    protected $loveRepositories,$blogRepositories;
+    public function __construct(LoveRepositories $loveRepositories,BlogRepositories $blogRepositories){
         $this->loveRepositories = $loveRepositories;
+        $this->blogRepositories = $blogRepositories;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('notification',[
-            'data' => $this->loveRepositories->
-        ])
+        // $data = $this->loveRepositories->searchWhereSelect('user_id',auth()->user()->id,['User','Blog']);
+        if(!auth()->user())
+        {
+            return abort(403);
+        }
+        $data = $this->blogRepositories->searchWhereSelect('user_id',auth()->user()->id,['User','Love.User','Love.Blog']);
+
+        // dd($data);
+        return view('notification.index',[
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -35,6 +45,10 @@ class LoveController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth()->user())
+        {
+            return abort(403);
+        }
         $this->loveRepositories->create([
             'blog_id' => $request->blog_id,
             'user_id' => auth()->user()->id
@@ -74,6 +88,10 @@ class LoveController extends Controller
      */
     public function destroy(Request $request)
     {
+        if(!auth()->user())
+        {
+            return abort(403);
+        }
         $this->loveRepositories->delete($request->love_id);
         return response()->json([
             'message' => 'Sukses Hapus',
