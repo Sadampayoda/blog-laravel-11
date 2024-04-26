@@ -6,8 +6,7 @@
                     <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
                 </div>
                 <div class="col text-end">
-                    <button class="custom-btn" type="button" id="delete-comment"
-                        data-id="{{ $item->id }}">
+                    <button class="custom-btn" type="button" id="delete-comment" data-id="{{ $item->id }}">
                         <i class="bi bi-trash3"></i>
                     </button>
                 </div>
@@ -17,12 +16,13 @@
                 <div class="col text-muted">
                     <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
                 </div>
-                <div class="col text-end">
-                    <button class="custom-btn" type="button" id="delete-comment"
-                        data-id="{{ $item->id }}">
-                        <i class="bi bi-trash3"></i>
-                    </button>
-                </div>
+                @if ($item->User->id == auth()->user()->id)
+                    <div class="col text-end">
+                        <button class="custom-btn" type="button" id="delete-comment" data-id="{{ $item->id }}">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                @endif
             </div>
         @endif
         <div class="row">
@@ -31,7 +31,4 @@
             </div>
         </div>
     </div>
-
-
-
 @endforeach

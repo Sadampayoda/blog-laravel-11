@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Love;
+use App\Repositories\LoveRepositories;
 use Illuminate\Http\Request;
 
 class LoveController extends Controller
 {
+    protected $loveRepositories;
+    public function __construct(LoveRepositories $loveRepositories){
+        $this->loveRepositories = $loveRepositories;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('notification',[
+            'data' => $this->loveRepositories->
+        ])
     }
 
     /**
@@ -28,7 +35,14 @@ class LoveController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->loveRepositories->create([
+            'blog_id' => $request->blog_id,
+            'user_id' => auth()->user()->id
+        ]);
+
+        return response()->json([
+            'message' => 'Sukses love'
+        ]);
     }
 
     /**
@@ -58,8 +72,12 @@ class LoveController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Love $love)
+    public function destroy(Request $request)
     {
-        //
+        $this->loveRepositories->delete($request->love_id);
+        return response()->json([
+            'message' => 'Sukses Hapus',
+
+        ]);
     }
 }

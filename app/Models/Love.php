@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Love extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function User()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function Blog()
+    {
+        return $this->belongsTo(Blog::class);
+    }
+
+
 }

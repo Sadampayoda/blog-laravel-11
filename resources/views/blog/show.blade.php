@@ -51,26 +51,6 @@
                             <p>{{ $data->description }}</p>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-1">
-                            <button class="custom-btn"><i class="bi bi-heart"></i></button>
-                        </div>
-                        @if (auth()->user()->id == $data->User->id)
-                            <div class="col-1">
-                                <button type="button" class="custom-btn" data-bs-toggle="modal"
-                                    data-bs-target="#BlogEditModal{{ $data->id }}"><i
-                                        class="bi bi-pencil-square"></i></i>
-                                </button>
-
-                            </div>
-                            <div class="col-1">
-                                <button type="button" class="custom-btn" data-bs-toggle="modal"
-                                    data-bs-target="#BlogDeleteModal{{ $data->id }}"><i class="bi bi-trash3"></i>
-                                </button>
-                            </div>
-                        @endif
-                    </div>
                 </div>
             </div>
             <div class="col-md-5">
@@ -101,12 +81,15 @@
                                             <div class="col text-muted">
                                                 <i class="bi bi-person-bounding-box"></i> {{ $item->User->name }}
                                             </div>
-                                            <div class="col text-end">
-                                                <button class="custom-btn" type="button" id="delete-comment"
-                                                    data-id="{{ $item->id }}">
-                                                    <i class="bi bi-trash3"></i>
-                                                </button>
-                                            </div>
+                                            @if ($item->User->id == auth()->user()->id)
+                                                <div class="col text-end">
+                                                    <button class="custom-btn" type="button" id="delete-comment"
+                                                        data-id="{{ $item->id }}">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </div>
+
+                                            @endif
                                         </div>
                                     @endif
                                     <div class="row">

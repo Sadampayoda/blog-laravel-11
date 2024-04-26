@@ -79,14 +79,36 @@
                                 <p>{{ $item->description }}</p>
                             </div>
                         </div>
-
+                        {{-- @dd($item->love[0]->user_id) --}}
                         <div class="row">
+                            @if (auth()->user())
+                                @if ($item->loves)
+                                    <div class="col-1">
+                                        <button class="custom-btn love" data-id="{{ $item->id }}"><i
+                                                id="icon{{ $item->id }}" class="bi bi-heart-fill text-danger" id="count-icon{{$item->id}}"></i> <span id="count-icon{{$item->id}}">{{$item->countLove}}</span> </button>
+                                        <input type="hidden" name="status" id="status{{ $item->id }}" value="on">
+                                        <input type="hidden" name="id_love" id="id_love{{$item->id}}" value="{{$item->id_love}}">
+                                        <input type="hidden" name="count" id="count{{$item->id}}" value="{{$item->countLove}}" >
+                                    </div>
+                                @else
+                                    <div class="col-1">
+                                        <button class="custom-btn love" data-id="{{ $item->id }}"><i
+                                                id="icon{{ $item->id }}" class="bi bi-heart" ></i> <span id="count-icon{{$item->id}}">{{$item->countLove}}</span></button>
+                                        <input type="hidden" name="status" id="status{{ $item->id }}" value="off">
+                                        <input type="hidden" name="count" id="count{{$item->id}}" value="{{$item->countLove}}" >
+
+                                    </div>
+                                @endif
+                            @else
                             <div class="col-1">
-                                <button class="custom-btn"><i class="bi bi-heart"></i></button>
+                                <a href="{{route('login')}}" class="custom-btn love"><i
+                                         class="bi bi-heart" ></i> <span>{{$item->countLove}}</span></a>
                             </div>
+                            @endif
+
                             <div class="col-1 ">
-                                <a href="{{ route('blog.show', $item->id) }}" class="custom-btn mt-1 text-decoration-none text-dark"><i
-                                        class="bi bi-chat-square"></i>
+                                <a href="{{ route('blog.show', $item->id) }}"
+                                    class="custom-btn mt-1 text-decoration-none text-dark"><i class="bi bi-chat-square"></i>
                                 </a>
                             </div>
                             @if (auth()->user()->id == $item->User->id)
@@ -104,7 +126,7 @@
                                 </div>
                             @endif
                             <div class="col text-end">
-                                <button class="custom-btn">{{$item->countComment}} Komentar
+                                <button class="custom-btn">{{ $item->countComment }} Komentar
                                 </button>
                             </div>
                         </div>
@@ -179,14 +201,14 @@
                             <input type="hidden" name="imageLama" id="imageLama{{ $item->id }}"
                                 value="{{ $item->image }}">
                             <input type="hidden" name="imageHapus" id="image-hapus{{ $item->id }}" value="">
-                            <!-- Input file baru -->
+
                             <div class="mb-2">
                                 <label for="image" class="form-label">
                                     Upload File {{ $item->image ? 'Baru' : '' }}
                                 </label>
                                 <input type="file" name="image" id="image" class="form-control">
                             </div>
-                            <!-- Textarea untuk deskripsi -->
+
                             <div class="form-floating">
                                 <textarea class="form-control" placeholder="Tuliskan Blog Anda" name="description" id="description"
                                     style="height: 100px">{{ $item->description }}</textarea>
@@ -194,9 +216,9 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <!-- Tombol tutup modal -->
+
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <!-- Tombol simpan perubahan -->
+
                             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                         </div>
                     </form>
@@ -257,6 +279,54 @@
                     }
                 })
             })
+
+            $('.love').on('click', function() {
+                var blog_id = $(this).data('id')
+                var status = $('#status' + blog_id).val()
+                var count = $('#count'+blog_id).val()
+
+                if (status == 'off') {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('love.store') }}",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            blog_id: blog_id
+                        },
+                        success: function(respons) {
+                            console.log(respons)
+                            $('#count-icon'+blog_id).html(parseInt(count)+1)
+                            // $('#count-icon'+blog_id).html(count+1)
+                            $('#status' + blog_id).val('on')
+                            $('#icon' + blog_id).addClass('bi bi-heart-fill text-danger')
+                            $('#icon' + blog_id).removeClass('bi bi-heart')
+                        }
+                    })
+
+                } else if (status == 'on') {
+                    var love_id = $('#id_love'+ blog_id).val()
+
+                    $.ajax({
+                        type: 'DELETE',
+                        url: "{{ route('love.destroy', ['love' => '__love_id__']) }}"
+                            .replace('__love_id__', love_id),
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            love_id: love_id
+                        },
+                        success: function(respons) {
+                            console.log(respons)
+                            $('#count-icon'+blog_id).html(parseInt(count)-1)
+                            $('#status' + blog_id).val('off')
+                            $('#icon' + blog_id).addClass('bi bi-heart')
+                            $('#icon' + blog_id).removeClass('bi bi-heart-fill text-danger')
+                        }
+                    })
+                }
+
+            })
+
         })
     </script>
 @endsection

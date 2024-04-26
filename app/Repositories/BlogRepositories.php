@@ -37,12 +37,25 @@ Class BlogRepositories implements CrudRepositoriesInterface, SearchRepositoriesI
         Blog::where('id',$id)->delete();
     }
 
-    public function search($keyword, ?array $relationships = [])
+    public function search($columns,$keyword, ?array $relationships = [])
     {
         if($relationships){
-            return Blog::with($relationships)->where('description','LIKE','%'.$keyword.'%')->orderBy('created_at','DESC')->get();
+            return Blog::with($relationships)->where($columns,'LIKE','%'.$keyword.'%')->orderBy('created_at','DESC')->get();
         }else{
-            return Blog::where('description','LIKE','%'.$keyword.'%')->get();
+            return Blog::where($columns,'LIKE','%'.$keyword.'%')->get();
         }
     }
+
+    public function searchWhereSelect(string $columns, string $keyword, array $relationships = [])
+    {
+        if($relationships)
+        {
+            return Blog::with($relationships)->where($columns,$keyword)->get();
+        }else{
+
+            return Blog::where($columns,$keyword)->get();
+        }
+    }
+
+
 }

@@ -21,4 +21,9 @@ class Blog extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function Love()
+    {
+        return $this->hasMany(Love::class);
+    }
 }

@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image',
     ];
 
     /**
@@ -48,5 +49,10 @@ class User extends Authenticatable
     public function blogs()
     {
         return $this->hasMany(Blog::class);
+    }
+
+    public function Love()
+    {
+        return $this->hasOne(Love::class);
     }
 }

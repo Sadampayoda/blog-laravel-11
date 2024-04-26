@@ -3,38 +3,38 @@
 
 namespace App\Repositories;
 use App\Repositories\interface\{CrudRepositoriesInterface};
-use App\Models\Comment;
+use App\Models\User;
 
-Class CommentRepositories implements CrudRepositoriesInterface {
+Class UserRepositories implements CrudRepositoriesInterface {
     public function all(array $relationships = []){
         if($relationships){
-            return Comment::with($relationships)->orderBy('created_at','DESC')->get();
+            return User::with($relationships)->orderBy('created_at','DESC')->get();
         }else{
-            return Comment::all();
+            return User::all();
         }
     }
     public function find($id, ?array $relationships = [])
     {
         if($relationships){
-            return Comment::with($relationships)->orderBy('created_at','DESC')->find($id);
+            return User::with($relationships)->orderBy('created_at','DESC')->find($id);
         }else{
-            return Comment::find($id);
+            return User::find($id);
         }
     }
 
     public function create(array $data)
     {
-        Comment::create($data);
+        User::create($data);
     }
 
     public function update($id, array $data)
     {
-        Comment::where('id',$id)->update($data);
+        User::where('id',$id)->update($data);
     }
 
     public function delete($id)
     {
-        Comment::where('id',$id)->delete();
+        User::where('id',$id)->delete();
     }
 
 

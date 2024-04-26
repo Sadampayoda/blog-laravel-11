@@ -1,5 +1,6 @@
 @if ($data)
     @foreach ($data as $item)
+        {{-- @dd($item->image) --}}
         <div class="card p-4 m-1">
             <div class="row">
                 @if ($item->User->image)
@@ -30,14 +31,43 @@
                     <p>{{ $item->description }}</p>
                 </div>
             </div>
-
+            {{-- @dd($item->love[0]->user_id) --}}
             <div class="row">
-                <div class="col-1">
-                    <button class="custom-btn"><i class="bi bi-heart"></i></button>
-                </div>
-                <div class="col-1">
-                    <button class="custom-btn"><i class="bi bi-chat-square"></i>
-                    </button>
+                @if (auth()->user())
+                    @if ($item->loves)
+                        <div class="col-1">
+                            <button class="custom-btn love" data-id="{{ $item->id }}"><i
+                                    id="icon{{ $item->id }}" class="bi bi-heart-fill text-danger"
+                                    id="count-icon{{ $item->id }}"></i> <span
+                                    id="count-icon{{ $item->id }}">{{ $item->countLove }}</span> </button>
+                            <input type="hidden" name="status" id="status{{ $item->id }}" value="on">
+                            <input type="hidden" name="id_love" id="id_love{{ $item->id }}"
+                                value="{{ $item->id_love }}">
+                            <input type="hidden" name="count" id="count{{ $item->id }}"
+                                value="{{ $item->countLove }}">
+                        </div>
+                    @else
+                        <div class="col-1">
+                            <button class="custom-btn love" data-id="{{ $item->id }}"><i
+                                    id="icon{{ $item->id }}" class="bi bi-heart"></i> <span
+                                    id="count-icon{{ $item->id }}">{{ $item->countLove }}</span></button>
+                            <input type="hidden" name="status" id="status{{ $item->id }}" value="off">
+                            <input type="hidden" name="count" id="count{{ $item->id }}"
+                                value="{{ $item->countLove }}">
+
+                        </div>
+                    @endif
+                @else
+                    <div class="col-1">
+                        <a href="{{ route('login') }}" class="custom-btn love"><i class="bi bi-heart"></i>
+                            <span>{{ $item->countLove }}</span></a>
+                    </div>
+                @endif
+
+                <div class="col-1 ">
+                    <a href="{{ route('blog.show', $item->id) }}"
+                        class="custom-btn mt-1 text-decoration-none text-dark"><i class="bi bi-chat-square"></i>
+                    </a>
                 </div>
                 @if (auth()->user()->id == $item->User->id)
                     <div class="col-1">
@@ -53,7 +83,7 @@
                     </div>
                 @endif
                 <div class="col text-end">
-                    <button class="custom-btn">0 Komentar
+                    <button class="custom-btn">{{ $item->countComment }} Komentar
                     </button>
                 </div>
             </div>
@@ -66,4 +96,3 @@
         </div>
     </div>
 @endif
-

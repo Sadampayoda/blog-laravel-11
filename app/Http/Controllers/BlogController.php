@@ -20,12 +20,21 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = $this->blogRepositories->all(['User','Comment']);
-
+        $blogs = $this->blogRepositories->all(['User','Comment','Love.User']);
         $blogs->map(function ($blog) {
             $newFormat = Carbon::createFromFormat('Y-m-d H:i:s', $blog->created_at);
             $blog->create_blog = $newFormat->format('H:i - d F Y');
             $blog->countComment = $blog->Comment->count();
+            $blog->countLove = $blog->Love->count();
+            foreach($blog->Love as $item)
+            {
+                $blog->loves = false;
+                if($item->user_id == auth()->user()->id)
+                {
+                    $blog->loves = true;
+                    $blog->id_love = $item->id;
+                }
+            }
         });
 
         // dd($blogs);
